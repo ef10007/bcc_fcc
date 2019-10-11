@@ -5,7 +5,8 @@ from bson import ObjectId
 import json
 from pprint import pprint
 
-from bson.json_util import dumps
+from ase.build import surface
+from ase.visualize import view
 
 hostname = os.getenv('hpc_host')
 username = os.getenv('hpc_user')
@@ -23,12 +24,17 @@ server = SSHTunnelForwarder(
 server.start()
 
 client = MongoClient('127.0.0.1', server.local_bind_port) # server.local_bind_port is assigned local port
-
 db = client[database]
-cursor = db.BCC.find({ }).limit(10)
+cursor = db.FCC.find({ }).limit(10)
 
-for document in cursor:
-    milier_indices = 
-    print(document['hkl'], document['eV/atom'])
+for i, document in enumerate(cursor):
+    atom = document['atom']
+    milier_indices = document['hkl'].replace('_',', ')
+    potential_energy = document['eV/atom']
+
+    print(atom, milier_indices, potential_energy)
+
+# view(s1)
+
 
 server.stop()
