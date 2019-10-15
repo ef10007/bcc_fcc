@@ -8,6 +8,7 @@ from pprint import pprint
 from ase.build import surface
 from ase.visualize import view
 
+
 hostname = os.getenv('hpc_host')
 username = os.getenv('hpc_user')
 pwd = os.getenv('hpc_pw')
@@ -21,20 +22,22 @@ server = SSHTunnelForwarder(
     remote_bind_address=('127.0.0.1', 27017)
 )
 
-server.start()
+def get_data(limit=1):
+    server.start()
 
-client = MongoClient('127.0.0.1', server.local_bind_port) # server.local_bind_port is assigned local port
-db = client[database]
-cursor = db.FCC.find({ }).limit(10)
+    client = MongoClient('127.0.0.1', server.local_bind_port) # server.local_bind_port is assigned local port
+    db = client[database]
+    cursor = db.FCC.find({ }).limit(limit)
 
-for i, document in enumerate(cursor):
-    atom = document['atom']
-    milier_indices = document['hkl'].replace('_',', ')
-    potential_energy = document['eV/atom']
+    for document in cursor:
+        atom = document['atom']
+        milier_indices = document['hkl'].replace('_',', ')
+        potential_energy = document['eV/atom']
+        yield atom, milier_indices, potential_energy
 
-    print(atom, milier_indices, potential_energy)
-
-# view(s1)
+    # server.stop()
 
 
-server.stop()
+# data = get_data(10)
+
+# print([d for d in data])
