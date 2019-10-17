@@ -1,3 +1,4 @@
+# Referenced from https://journals.aps.org/prb/abstract/10.1103/PhysRevB.93.035434
 # lattice constant (BCC)
 
 Li = 3.428

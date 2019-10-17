@@ -31,9 +31,10 @@ def get_data(limit=1):
 
     for document in cursor:
         atom = document['atom']
-        milier_indices = document['hkl'].replace('_',', ')
+        miller_indices = document['hkl'].split('_')
+        miller_indices = tuple(int(m) for m in miller_indices)
         potential_energy = document['eV/atom']
-        yield atom, milier_indices, potential_energy
+        yield atom, miller_indices, potential_energy
 
     # server.stop()
 
